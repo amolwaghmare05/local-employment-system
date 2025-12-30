@@ -1,0 +1,1606 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Dashboard - JobMatrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .navbar-brand {
+      color: white !important;
+      font-weight: 600;
+    }
+    .navbar-dark .navbar-nav .nav-link {
+      color: rgba(255,255,255,0.9) !important;
+    }
+    .navbar-dark .navbar-nav .nav-link:hover {
+      color: white !important;
+    }
+    .main-container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      background: transparent;
+    }
+    h2 {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .card {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .card-header {
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-body {
+      padding: 1.5rem;
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #2193b0, #6dd5ed);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(33,147,176,0.3);
+    }
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: rgba(33,147,176,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+    }
+    .stat-icon i {
+      font-size: 1.5rem;
+      color: #2193b0;
+    }
+    .stat-info h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #2193b0;
+    }
+    .stat-info p {
+      margin: 0;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    .data-table {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .data-table pre {
+      margin: 0;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .refresh-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+    .chart-container {
+      position: relative;
+      margin-top: 1rem;
+      height: 300px;
+    }
+    .dataTables_wrapper {
+      padding: 1rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .table {
+      margin-bottom: 1rem;
+    }
+    .table thead th {
+      background: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+      color: #2193b0;
+      font-weight: 600;
+    }
+    .table tbody tr:hover {
+      background-color: rgba(33,147,176,0.05);
+    }
+    .dataTables_filter input {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+    }
+    .dataTables_filter input:focus {
+      border-color: #2193b0;
+      box-shadow: 0 0 0 0.25rem rgba(33,147,176,0.25);
+      outline: none;
+    }
+    .dt-buttons .btn {
+      margin-right: 0.5rem;
+      border-radius: 8px;
+    }
+    .badge {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .pagination .page-link {
+      color: #2193b0;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin: 0 2px;
+      border-radius: 8px;
+    }
+    .pagination .page-item.active .page-link {
+      background: #2193b0;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#">
+        <i class="fas fa-shield-alt me-2"></i>JobMatrix - Admin Panel
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="fas fa-home me-1"></i>Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="logout()">
+              <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Admin Dashboard</h2>
+      <a class="btn btn-outline-primary" href="/">
+        <i class="fas fa-home me-2"></i>Home
+      </a>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-container">
+      <div class="stat-card" id="users-stat">
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>Total Users</p>
+        </div>
+      </div>
+      <div class="stat-card" id="jobs-stat">
+        <div class="stat-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>Active Jobs</p>
+        </div>
+      </div>
+      <div class="stat-card" id="applications-stat">
+        <div class="stat-icon">
+          <i class="fas fa-paper-plane"></i>
+        </div>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>Applications</p>
+        </div>
+      </div>
+      <div class="stat-card" id="workers-stat">
+        <div class="stat-icon">
+          <i class="fas fa-hard-hat"></i>
+        </div>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>Active Workers</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Users Section -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-users me-2"></i>Users</h5>
+            <button class="btn btn-sm btn-primary" onclick="showCreateUserModal()">
+              <i class="fas fa-plus me-1"></i>Add User
+            </button>
+          </div>
+          <div class="card-body">
+            <table id="usersTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs Section -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Jobs</h5>
+            <button class="btn btn-sm btn-primary" onclick="showCreateJobModal()">
+              <i class="fas fa-plus me-1"></i>Add Job
+            </button>
+          </div>
+          <div class="card-body">
+            <table id="jobsTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Employer ID</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Posted At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applications Section -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Applications</h5>
+          </div>
+          <div class="card-body">
+            <table id="applicationsTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Job ID</th>
+                  <th>Worker ID</th>
+                  <th>Status</th>
+                  <th>Applied At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Logs Section -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-history me-2"></i>Activity Logs
+            </h5>
+            <button id="loadLogs" class="btn btn-primary btn-sm">
+              <i class="fas fa-sync-alt me-2"></i>Refresh Logs
+            </button>
+          </div>
+          <div class="card-body">
+            <table id="activityLogsTable" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Target</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Job Modal -->
+  <div class="modal fade" id="editJobModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Job</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editJobForm">
+            <input type="hidden" name="job_id">
+            <div class="mb-3">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" name="title" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Required Skills</label>
+              <input type="text" class="form-control" name="required_skills">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" name="description"></textarea>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Minimum Salary</label>
+                <input type="number" class="form-control" name="salary_min">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Maximum Salary</label>
+                <input type="number" class="form-control" name="salary_max">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Location</label>
+              <input type="text" class="form-control" name="location">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="status">
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="updateJob()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create User Modal -->
+  <div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create New User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="createUserForm">
+            <div class="mb-3">
+              <label for="createUserEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="createUserEmail" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="createUserPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="createUserPassword" name="password" required>
+            </div>
+            <div class="mb-3">
+              <label for="createUserRole" class="form-label">Role</label>
+              <select class="form-control" id="createUserRole" name="role" required>
+                <option value="">Select Role</option>
+                <option value="worker">Worker</option>
+                <option value="employer">Employer</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div class="mb-3" id="createUserExtraFields" style="display: none;">
+              <div id="workerFields" style="display: none;">
+                <label for="createUserFullName" class="form-label">Full Name</label>
+                <input type="text" class="form-control mb-2" id="createUserFullName" name="full_name">
+                <label for="createUserSkills" class="form-label">Skills</label>
+                <input type="text" class="form-control" id="createUserSkills" name="skills">
+              </div>
+              <div id="employerFields" style="display: none;">
+                <label for="createUserCompanyName" class="form-label">Company Name</label>
+                <input type="text" class="form-control" id="createUserCompanyName" name="company_name">
+              </div>
+              <div id="adminFields" style="display: none;">
+                <label for="createUserAdminName" class="form-label">Admin Name</label>
+                <input type="text" class="form-control mb-2" id="createUserAdminName" name="admin_name">
+                <label for="createUserDepartment" class="form-label">Department</label>
+                <input type="text" class="form-control" id="createUserDepartment" name="department">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="createUser()">Create User</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal fade" id="editUserModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editUserForm">
+            <input type="hidden" name="user_id">
+            <div class="mb-3">
+              <label for="editUserEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editUserEmail" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="editUserRole" class="form-label">Role</label>
+              <select class="form-control" id="editUserRole" name="role" required>
+                <option value="worker">Worker</option>
+                <option value="employer">Employer</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="updateUser()">Update User</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Job Modal -->
+  <div class="modal fade" id="createJobModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create New Job</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="createJobForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="createJobTitle" class="form-label">Job Title</label>
+                  <input type="text" class="form-control" id="createJobTitle" name="title" required>
+                </div>
+                <div class="mb-3">
+                  <label for="createJobEmployer" class="form-label">Employer</label>
+                  <select class="form-control" id="createJobEmployer" name="employer_id" required>
+                    <option value="">Select Employer</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="createJobLocation" class="form-label">Location</label>
+                  <input type="text" class="form-control" id="createJobLocation" name="location">
+                </div>
+                <div class="mb-3">
+                  <label for="createJobStatus" class="form-label">Status</label>
+                  <select class="form-control" id="createJobStatus" name="status">
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="createJobSkills" class="form-label">Required Skills</label>
+                  <textarea class="form-control" id="createJobSkills" name="required_skills" rows="3" required></textarea>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <label for="createJobSalaryMin" class="form-label">Min Salary</label>
+                      <input type="number" class="form-control" id="createJobSalaryMin" name="salary_min">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="mb-3">
+                      <label for="createJobSalaryMax" class="form-label">Max Salary</label>
+                      <input type="number" class="form-control" id="createJobSalaryMax" name="salary_max">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="createJobDescription" class="form-label">Description</label>
+              <textarea class="form-control" id="createJobDescription" name="description" rows="4"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="createJob()">Create Job</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Action</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to proceed with this action?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  
+  <script>
+    // Cookie helper functions
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+      return null;
+    }
+
+    function setCookie(name, value, days = 7) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
+    }
+
+    function deleteCookie(name) {
+      document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    }
+
+    // Logout function
+    function logout() {
+      deleteCookie('token');
+      deleteCookie('refresh_token');
+      deleteCookie('role');
+      try {
+        localStorage.clear();
+      } catch (e) {
+        console.log('localStorage not available');
+      }
+      window.location.href = '/login';
+    }
+
+    function getToken() {
+      return getCookie('token') || localStorage.getItem('token');
+    }
+
+    function getRefreshToken() {
+      return getCookie('refresh_token') || localStorage.getItem('refresh_token');
+    }
+
+    function getRole() {
+      return getCookie('role') || localStorage.getItem('role');
+    }
+
+    // Function to handle token refresh
+    async function refreshAccessToken() {
+        try {
+            const r = await fetch('/auth/refresh', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${getRefreshToken()}`
+                }
+            });
+            
+            if (r.ok) {
+                const data = await r.json();
+                setCookie('token', data.access_token, 1);
+                try {
+                    localStorage.setItem('token', data.access_token);
+                } catch (e) {
+                    console.log('localStorage not available');
+                }
+                return data.access_token;
+            } else {
+                window.location.href = '/login';
+                return null;
+            }
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            return null;
+        }
+    }
+
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      function checkAuth() {
+        try {
+          const token = getToken();
+          const role = getRole();
+
+          console.log('Auth check - Token:', !!token, 'Role:', role);
+
+          if (!token || role !== 'admin') {
+            console.log('Auth failed, redirecting to login');
+            window.location.href = '/login';
+            return false;
+          }
+          return true;
+        } catch (error) {
+          console.error('Error checking auth:', error);
+          window.location.href = '/login';
+          return false;
+        }
+      }
+
+      if (!checkAuth()) {
+        return;
+      }
+
+      // Initialize page after successful auth
+      console.log('Auth successful, initializing admin page');
+      
+      // Initial load
+      setTimeout(() => {
+        loadUsers();
+        loadJobs();
+        loadApplications();
+        loadActivityLogs();
+      }, 200);
+
+      // Auto refresh every minute
+      setInterval(() => {
+        loadUsers();
+        loadJobs();
+        loadApplications();
+        loadActivityLogs();
+      }, 60000);
+    });
+
+    const token = getToken();
+    const role = getRole();
+
+    // Wrapper for fetch calls with token refresh
+    async function fetchWithAuth(url, options = {}) {
+        const headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${getToken()}`
+        };
+
+        let response = await fetch(url, { ...options, headers });
+
+        if (response.status === 401 || response.status === 403) {
+            const newToken = await refreshAccessToken();
+            if (newToken) {
+                headers.Authorization = `Bearer ${newToken}`;
+                response = await fetch(url, { ...options, headers });
+            }
+        }
+
+        return response;
+    }
+
+    // DataTables configuration
+    const dataTablesConfig = {
+      pageLength: 10,
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'collection',
+          text: '<i class="fas fa-download me-2"></i>Export',
+          buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        }
+      ],
+      responsive: true,
+      order: [[0, 'desc']],
+      language: {
+        search: "<i class='fas fa-search me-2'></i>Search:",
+        paginate: {
+          first: '<i class="fas fa-angle-double-left"></i>',
+          last: '<i class="fas fa-angle-double-right"></i>',
+          next: '<i class="fas fa-angle-right"></i>',
+          previous: '<i class="fas fa-angle-left"></i>'
+        }
+      }
+    };
+
+    // Initialize DataTables
+    const usersTable = $('#usersTable').DataTable({
+      ...dataTablesConfig,
+      columns: [
+        { data: 'id' }, // Changed from 'user_id' to 'id'
+        { data: 'email' },
+        { 
+          data: 'role',
+          render: function(data) {
+            const badges = {
+              'worker': 'bg-info',
+              'employer': 'bg-success',
+              'admin': 'bg-danger'
+            };
+            return `<span class="badge ${badges[data]}">${data}</span>`;
+          }
+        },
+        { 
+          data: 'created_at',
+          render: function(data) {
+            return new Date(data).toLocaleString();
+          }
+        },
+        {
+          data: null,
+          orderable: false,
+          render: function(data, type, row) {
+            return `
+              <div class="btn-group">
+                <button class="btn btn-sm btn-primary me-1" onclick="editUser('${row.id}', '${row.email}', '${row.role}')" title="Edit User">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteUser('${row.id}')" title="Delete User">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            `;
+          }
+        }
+      ]
+    });
+
+    const jobsTable = $('#jobsTable').DataTable({
+      ...dataTablesConfig,
+      columns: [
+        { data: 'job_id' },
+        { data: 'title' },
+        { data: 'employer_id' },
+        { data: 'location' },
+        { 
+          data: 'status',
+          render: function(data) {
+            const badge = data === 'open' ? 'bg-success' : 'bg-secondary';
+            return `<span class="badge ${badge}">${data}</span>`;
+          }
+        },
+        { 
+          data: 'posted_at',
+          render: function(data) {
+            return new Date(data).toLocaleDateString();
+          }
+        },
+        {
+          data: null,
+          orderable: false,
+          render: function(data, type, row) {
+            return `
+              <div class="btn-group">
+                <button class="btn btn-sm btn-primary me-1" onclick="editJob('${row.job_id}')" title="Edit Job">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteJob('${row.job_id}')" title="Delete Job">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            `;
+          }
+        }
+      ]
+    });
+
+    const applicationsTable = $('#applicationsTable').DataTable({
+      ...dataTablesConfig,
+      columns: [
+        { data: 'application_id' },
+        { data: 'job_id' },
+        { data: 'worker_id' },
+        { 
+          data: 'application_status',
+          render: function(data) {
+            const badges = {
+              'pending': 'bg-warning',
+              'approved': 'bg-success',
+              'rejected': 'bg-danger'
+            };
+            return `<span class="badge ${badges[data]}">${data}</span>`;
+          }
+        },
+        { 
+          data: 'applied_at',
+          render: function(data) {
+            return new Date(data).toLocaleString();
+          }
+        },
+        {
+          data: null,
+          orderable: false,
+          render: function(data, type, row) {
+            return `
+              <div class="btn-group">
+                <button class="btn btn-sm btn-success me-1" 
+                        onclick="updateApplicationStatus('${row.application_id}', 'approved')"
+                        ${row.application_status !== 'pending' ? 'disabled' : ''} title="Approve">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-sm btn-warning me-1"
+                        onclick="updateApplicationStatus('${row.application_id}', 'rejected')"
+                        ${row.application_status !== 'pending' ? 'disabled' : ''} title="Reject">
+                  <i class="fas fa-times"></i>
+                </button>
+                <button class="btn btn-sm btn-danger"
+                        onclick="deleteApplication('${row.application_id}')" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            `;
+          }
+        }
+      ]
+    });
+
+    // Initialize Activity Logs DataTable
+    const activityLogsTable = $('#activityLogsTable').DataTable({
+      ...dataTablesConfig,
+      order: [[0, 'desc']],
+      columns: [
+        { 
+          data: 'created_at',
+          render: function(data) {
+            return new Date(data).toLocaleString();
+          }
+        },
+        { data: 'admin_email' },
+        { 
+          data: 'action_type',
+          render: function(data) {
+            const badges = {
+              'delete': 'bg-danger',
+              'update': 'bg-warning',
+              'create': 'bg-success'
+            };
+            return `<span class="badge ${badges[data] || 'bg-secondary'}">${data}</span>`;
+          }
+        },
+        { 
+          data: null,
+          render: function(data) {
+            return `${data.target_table} #${data.target_id}`;
+          }
+        },
+        { data: 'note' }
+      ]
+    });
+
+    // Load data functions
+    async function loadUsers() {
+      try {
+        const r = await fetchWithAuth('/api/admin/users');
+        const data = await r.json();
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        usersTable.clear().rows.add(data).draw();
+        
+        // Update total users count
+        document.querySelector('#users-stat h3').textContent = data.length;
+        
+        // Update active workers count - only count workers with profiles (has full_name and skills)
+        const activeWorkers = data.filter(u => 
+          u.role === 'worker' && u.full_name && u.skills
+        ).length;
+        document.querySelector('#workers-stat h3').textContent = activeWorkers;
+      } catch (error) {
+        console.error('Error loading users:', error);
+      }
+    }
+
+    async function loadJobs() {
+      try {
+        const r = await fetchWithAuth('/api/admin/jobs');
+        const data = await r.json();
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        jobsTable.clear().rows.add(data).draw();
+        const activeJobs = data.filter(j => j.status === 'open').length;
+        document.querySelector('#jobs-stat h3').textContent = activeJobs;
+      } catch (error) {
+        console.error('Error loading jobs:', error);
+      }
+    }
+
+    async function loadApplications() {
+      try {
+        const r = await fetchWithAuth('/api/admin/applications');
+        const data = await r.json();
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        applicationsTable.clear().rows.add(data).draw();
+        document.querySelector('#applications-stat h3').textContent = data.length;
+      } catch (error) {
+        console.error('Error loading applications:', error);
+      }
+    }
+
+    // Load activity logs function
+    async function loadActivityLogs() {
+      try {
+        const r = await fetchWithAuth('/api/admin/activity-logs');
+        const data = await r.json();
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        activityLogsTable.clear().rows.add(data).draw();
+      } catch (error) {
+        console.error('Error loading activity logs:', error);
+      }
+    }
+
+    // View details function (can be expanded based on requirements)
+    function viewDetails(type, id) {
+      alert(`Viewing ${type} details for ID: ${id}`);
+      // Implement detailed view as needed
+    }
+
+    function editJob(jobId) {
+      // Find the job data from the DataTable
+      const job = jobsTable.rows().data().toArray().find(j => j.job_id === jobId);
+      if (!job) {
+        alert('Error: Job not found');
+        return;
+      }
+      
+      const form = document.getElementById('editJobForm');
+      form.job_id.value = jobId;
+      form.title.value = job.title || '';
+      form.required_skills.value = job.required_skills || '';
+      form.description.value = job.description || '';
+      form.salary_min.value = job.salary_min || '';
+      form.salary_max.value = job.salary_max || '';
+      form.location.value = job.location || '';
+      form.status.value = job.status || 'open';
+      
+      new bootstrap.Modal(document.getElementById('editJobModal')).show();
+    }
+
+    async function updateJob() {
+      const form = document.getElementById('editJobForm');
+      const jobId = form.job_id.value;
+      const data = {
+        title: form.title.value,
+        required_skills: form.required_skills.value,
+        description: form.description.value,
+        salary_min: form.salary_min.value || null,
+        salary_max: form.salary_max.value || null,
+        location: form.location.value,
+        status: form.status.value
+      };
+
+      try {
+        const r = await fetchWithAuth(`/api/admin/jobs/${jobId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+
+        if (r.ok) {
+          bootstrap.Modal.getInstance(document.getElementById('editJobModal')).hide();
+          loadJobs();
+        } else {
+          alert('Error updating job');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error updating job');
+      }
+    }
+
+    function deleteJob(jobId) {
+      showConfirmation(() => performDeleteJob(jobId));
+    }
+
+    async function performDeleteJob(jobId) {
+      try {
+        const r = await fetchWithAuth(`/api/admin/jobs/${jobId}`, {
+          method: 'DELETE'
+        });
+        
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+
+        if (r.ok) {
+          loadJobs();
+        } else {
+          alert('Error deleting job');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error deleting job');
+      }
+    }
+
+    function deleteUser(userId) {
+      showConfirmation(() => performDeleteUser(userId));
+    }
+
+    async function performDeleteUser(userId) {
+      try {
+        const r = await fetchWithAuth(`/api/admin/users/${userId}`, {
+          method: 'DELETE'
+        });
+        
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+
+        if (r.ok) {
+          loadUsers();
+        } else {
+          alert('Error deleting user');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error deleting user');
+      }
+    }
+
+    function updateApplicationStatus(applicationId, status) {
+      showConfirmation(() => performUpdateApplication(applicationId, status));
+    }
+
+    async function performUpdateApplication(applicationId, status) {
+      try {
+        const r = await fetchWithAuth(`/api/admin/applications/${applicationId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status })
+        });
+        
+        if (r.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+
+        if (r.ok) {
+          loadApplications();
+        } else {
+          alert('Error updating application status');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error updating application status');
+      }
+    }
+
+    // CRUD Operations Functions
+    
+    // Delete User Function
+    async function deleteUser(userId) {
+      if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        return;
+      }
+      
+      try {
+        const response = await fetchWithAuth(`/api/admin/users/${userId}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('User deleted successfully!');
+          loadUsers(); // Refresh the table
+        } else {
+          alert(result.msg || 'Error deleting user');
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Error deleting user. Please try again.');
+      }
+    }
+    
+    // Edit User Function
+    async function editUser(userId, currentEmail, currentRole) {
+      const newEmail = prompt('Enter new email:', currentEmail);
+      if (!newEmail || newEmail === currentEmail) {
+        return;
+      }
+      
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newEmail)) {
+        alert('Please enter a valid email address');
+        return;
+      }
+      
+      try {
+        const response = await fetchWithAuth(`/api/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: newEmail
+          })
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('User updated successfully!');
+          loadUsers(); // Refresh the table
+        } else {
+          alert(result.msg || 'Error updating user');
+        }
+      } catch (error) {
+        console.error('Error updating user:', error);
+        alert('Error updating user. Please try again.');
+      }
+    }
+    
+    // Delete Job Function
+    async function deleteJob(jobId) {
+      if (!confirm('Are you sure you want to delete this job? This will also delete all related applications.')) {
+        return;
+      }
+      
+      try {
+        const response = await fetchWithAuth(`/api/admin/jobs/${jobId}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Job deleted successfully!');
+          loadJobs(); // Refresh the table
+          loadApplications(); // Refresh applications as they might be affected
+        } else {
+          alert(result.msg || 'Error deleting job');
+        }
+      } catch (error) {
+        console.error('Error deleting job:', error);
+        alert('Error deleting job. Please try again.');
+      }
+    }
+    
+    // Edit Job Function
+    async function editJob(jobId) {
+      try {
+        const response = await fetchWithAuth(`/api/admin/jobs/${jobId}`);
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch job details');
+        }
+        
+        const job = await response.json();
+        
+        // Populate the edit job modal
+        document.getElementById('editJobId').value = job.job_id;
+        document.getElementById('editJobTitle').value = job.title || '';
+        document.getElementById('editJobDescription').value = job.description || '';
+        document.getElementById('editJobRequiredSkills').value = job.required_skills || '';
+        document.getElementById('editJobLocation').value = job.location || '';
+        document.getElementById('editJobSalaryMin').value = job.salary_min || '';
+        document.getElementById('editJobSalaryMax').value = job.salary_max || '';
+        document.getElementById('editJobStatus').value = job.status || 'open';
+        
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('editJobModal'));
+        modal.show();
+      } catch (error) {
+        console.error('Error fetching job details:', error);
+        alert('Error loading job details. Please try again.');
+      }
+    }
+    
+    // Update Job Function
+    async function updateJob() {
+      const formData = new FormData(document.getElementById('editJobForm'));
+      const jobData = Object.fromEntries(formData.entries());
+      const jobId = document.getElementById('editJobId').value;
+      
+      try {
+        const response = await fetchWithAuth(`/api/admin/jobs/${jobId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(jobData)
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Job updated successfully!');
+          const modal = bootstrap.Modal.getInstance(document.getElementById('editJobModal'));
+          modal.hide();
+          loadJobs(); // Refresh the table
+        } else {
+          alert(result.msg || 'Error updating job');
+        }
+      } catch (error) {
+        console.error('Error updating job:', error);
+        alert('Error updating job. Please try again.');
+      }
+    }
+    
+    // Delete Application Function
+    async function deleteApplication(applicationId) {
+      if (!confirm('Are you sure you want to delete this application?')) {
+        return;
+      }
+      
+      try {
+        const response = await fetchWithAuth(`/api/admin/applications/${applicationId}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Application deleted successfully!');
+          loadApplications(); // Refresh the table
+        } else {
+          alert(result.msg || 'Error deleting application');
+        }
+      } catch (error) {
+        console.error('Error deleting application:', error);
+        alert('Error deleting application. Please try again.');
+      }
+    }
+
+    function deleteApplication(applicationId) {
+      if (!confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+        return;
+      }
+      
+      performDeleteApplication(applicationId);
+    }
+
+    async function performDeleteApplication(applicationId) {
+      try {
+        const response = await fetchWithAuth(`/api/admin/applications/${applicationId}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Application deleted successfully!');
+          loadApplications(); // Refresh the table
+        } else {
+          alert(result.msg || 'Error deleting application');
+        }
+      } catch (error) {
+        console.error('Error deleting application:', error);
+        alert('Error deleting application. Please try again.');
+      }
+    }
+
+    // User CRUD Functions
+    function showCreateUserModal() {
+      const form = document.getElementById('createUserForm');
+      form.reset();
+      document.getElementById('createUserExtraFields').style.display = 'none';
+      new bootstrap.Modal(document.getElementById('createUserModal')).show();
+    }
+
+    // Handle role change in create user modal
+    document.getElementById('createUserRole').addEventListener('change', function() {
+      const role = this.value;
+      const extraFields = document.getElementById('createUserExtraFields');
+      const workerFields = document.getElementById('workerFields');
+      const employerFields = document.getElementById('employerFields');
+      const adminFields = document.getElementById('adminFields');
+      
+      // Hide all fields first
+      workerFields.style.display = 'none';
+      employerFields.style.display = 'none';
+      adminFields.style.display = 'none';
+      
+      if (role) {
+        extraFields.style.display = 'block';
+        if (role === 'worker') {
+          workerFields.style.display = 'block';
+        } else if (role === 'employer') {
+          employerFields.style.display = 'block';
+        } else if (role === 'admin') {
+          adminFields.style.display = 'block';
+        }
+      } else {
+        extraFields.style.display = 'none';
+      }
+    });
+
+    async function createUser() {
+      const form = document.getElementById('createUserForm');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetchWithAuth('/api/admin/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('User created successfully!');
+          bootstrap.Modal.getInstance(document.getElementById('createUserModal')).hide();
+          loadUsers();
+        } else {
+          alert(result.msg || 'Error creating user');
+        }
+      } catch (error) {
+        console.error('Error creating user:', error);
+        alert('Error creating user. Please try again.');
+      }
+    }
+
+    function editUser(userId, email, role) {
+      const form = document.getElementById('editUserForm');
+      form.user_id.value = userId;
+      form.email.value = email;
+      form.role.value = role;
+      
+      new bootstrap.Modal(document.getElementById('editUserModal')).show();
+    }
+
+    async function updateUser() {
+      const form = document.getElementById('editUserForm');
+      const userId = form.user_id.value;
+      const data = {
+        email: form.email.value,
+        role: form.role.value
+      };
+
+      try {
+        const response = await fetchWithAuth(`/api/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('User updated successfully!');
+          bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+          loadUsers();
+        } else {
+          alert(result.msg || 'Error updating user');
+        }
+      } catch (error) {
+        console.error('Error updating user:', error);
+        alert('Error updating user. Please try again.');
+      }
+    }
+
+    // Job CRUD Functions
+    async function showCreateJobModal() {
+      // Load employers for the dropdown
+      try {
+        const response = await fetchWithAuth('/api/admin/users');
+        const users = await response.json();
+        const employers = users.filter(u => u.role === 'employer');
+        
+        const select = document.getElementById('createJobEmployer');
+        select.innerHTML = '<option value="">Select Employer</option>';
+        employers.forEach(emp => {
+          const option = document.createElement('option');
+          option.value = emp.id;
+          option.textContent = `${emp.email} (ID: ${emp.id})`;
+          select.appendChild(option);
+        });
+        
+        document.getElementById('createJobForm').reset();
+        new bootstrap.Modal(document.getElementById('createJobModal')).show();
+      } catch (error) {
+        console.error('Error loading employers:', error);
+        alert('Error loading employers');
+      }
+    }
+
+    async function createJob() {
+      const form = document.getElementById('createJobForm');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetchWithAuth('/api/admin/jobs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        
+        if (response.status === 401) {
+          localStorage.clear();
+          window.location.href = '/login';
+          return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Job created successfully!');
+          bootstrap.Modal.getInstance(document.getElementById('createJobModal')).hide();
+          loadJobs();
+        } else {
+          alert(result.msg || 'Error creating job');
+        }
+      } catch (error) {
+        console.error('Error creating job:', error);
+        alert('Error creating job. Please try again.');
+      }
+    }
+
+    function showConfirmation(callback) {
+      const modal = document.getElementById('confirmationModal');
+      const confirmBtn = document.getElementById('confirmActionBtn');
+      
+      confirmBtn.onclick = () => {
+        bootstrap.Modal.getInstance(modal).hide();
+        callback();
+      };
+      
+      new bootstrap.Modal(modal).show();
+    }
+  </script>
+</body>
+</html>

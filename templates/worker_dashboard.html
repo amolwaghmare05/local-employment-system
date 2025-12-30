@@ -1,0 +1,1024 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Worker Dashboard - JobMatrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%) !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .navbar-brand {
+      color: white !important;
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+    .navbar-brand:hover {
+      color: white !important;
+    }
+    .navbar-light .navbar-nav .nav-link {
+      color: rgba(255,255,255,0.9) !important;
+    }
+    .navbar-light .navbar-nav .nav-link:hover {
+      color: white !important;
+    }
+    .main-container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .card-header {
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-body {
+      padding: 1.5rem;
+    }
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #2193b0;
+      box-shadow: 0 0 0 0.25rem rgba(33,147,176,0.25);
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #2193b0, #6dd5ed);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(33,147,176,0.3);
+    }
+    .profile-section {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-right: 1.5rem;
+      background: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #2193b0;
+    }
+    .profile-info h3 {
+      margin: 0;
+      color: #2193b0;
+    }
+    .profile-info p {
+      margin: 0;
+      color: #6c757d;
+    }
+    .job-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    .job-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .job-title {
+      color: #2193b0;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .job-company {
+      color: #495057;
+      font-weight: 500;
+    }
+    .job-details {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .badge {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .skills-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .skill-tag {
+      background: rgba(33,147,176,0.1);
+      color: #2193b0;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    #msg {
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-card h4 {
+      color: #2193b0;
+      margin: 0;
+    }
+    .stat-card p {
+      color: #6c757d;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="fas fa-briefcase me-2"></i>JobMatrix
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="logout(); return false;">
+              <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-info">
+          <h3 id="profile-name">Welcome</h3>
+          <p id="profile-location">Complete your profile to get started</p>
+        </div>
+        <button class="btn btn-primary ms-auto" onclick="toggleEditMode()">
+          <i class="fas fa-edit me-2"></i>Edit Profile
+        </button>
+      </div>
+
+      <!-- Profile View -->
+      <div id="profileInfo" style="display:none">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="mb-3">Personal Information</h5>
+                <p><i class="fas fa-user me-2"></i><strong>Full Name:</strong> <span id="info_full_name"></span></p>
+                <p><i class="fas fa-map-marker-alt me-2"></i><strong>Location:</strong> <span id="info_location"></span></p>
+                <p><i class="fas fa-phone me-2"></i><strong>Phone:</strong> <span id="info_phone"></span></p>
+                <p><i class="fas fa-birthday-cake me-2"></i><strong>Age:</strong> <span id="info_age"></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="mb-3">Professional Information</h5>
+                <p><i class="fas fa-venus-mars me-2"></i><strong>Gender:</strong> <span id="info_gender"></span></p>
+                <p><i class="fas fa-tools me-2"></i><strong>Skills:</strong></p>
+                <div class="skills-tags" id="info_skills_tags"></div>
+                <p class="mt-3"><i class="fas fa-briefcase me-2"></i><strong>Experience:</strong> <span id="info_experience_years"></span> years</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Edit Form -->
+      <form id="profileForm" class="row g-3 mt-2" style="display:none">
+        <div class="col-md-6">
+          <label class="form-label">Full Name</label>
+          <input class="form-control" name="full_name" placeholder="Your full name">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Location</label>
+          <input class="form-control" name="location" placeholder="Your location">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Phone</label>
+          <input class="form-control" name="phone" placeholder="Your phone number">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Age</label>
+          <input class="form-control" name="age" type="number" placeholder="Your age">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Gender</label>
+          <select class="form-select" name="gender">
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Skills</label>
+          <input class="form-control" name="skills" placeholder="Your skills (comma separated)">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Experience (Years)</label>
+          <input class="form-control" name="experience_years" type="number" placeholder="Years of experience">
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary">
+            <i class="fas fa-save me-2"></i>Save Profile
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <i class="fas fa-briefcase fa-2x mb-2" style="color: #2193b0"></i>
+        <h4 id="total-matches">0</h4>
+        <p>Matched Jobs</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-paper-plane fa-2x mb-2" style="color: #2193b0"></i>
+        <h4 id="total-applications">0</h4>
+        <p>Applications Sent</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-check-circle fa-2x mb-2" style="color: #2193b0"></i>
+        <h4 id="approved-applications">0</h4>
+        <p>Approved</p>
+      </div>
+    </div>
+
+    <!-- Applied Jobs Section -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-clock me-2"></i>Applied Jobs (Pending Approval)
+        </h5>
+        <span class="badge bg-warning" id="pending-count">0 Pending</span>
+      </div>
+      <div class="card-body">
+        <div id="pending-jobs">
+          <div class="text-center py-4">
+            <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+            <h5 class="text-muted">Loading pending applications...</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approved Jobs Section -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-check-circle me-2"></i>Approved Jobs
+        </h5>
+        <span class="badge bg-success" id="approved-count">0 Approved</span>
+      </div>
+      <div class="card-body">
+        <div id="approved-jobs">
+          <div class="text-center py-4">
+            <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+            <h5 class="text-muted">Loading approved applications...</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jobs Section -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-briefcase me-2"></i>Matched Jobs
+        </h5>
+        <button id="loadJobs" class="btn btn-primary btn-sm">
+          <i class="fas fa-sync-alt me-2"></i>Refresh Jobs
+        </button>
+      </div>
+      <div class="card-body">
+        <div id="jobs"></div>
+      </div>
+    </div>
+
+    <!-- Applications History Section -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-history me-2"></i>Application History
+        </h5>
+        <button id="loadApplicationHistory" class="btn btn-primary btn-sm">
+          <i class="fas fa-sync-alt me-2"></i>Refresh History
+        </button>
+      </div>
+      <div class="card-body">
+        <div id="applicationHistory"></div>
+      </div>
+    </div>
+
+    <!-- Partition Info -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"></h5>
+          <i class="fas fa-database me-2"></i>Technical Information
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="input-group">
+          <input id="workerIdInput" class="form-control" placeholder="Your worker_id (after first profile save)">
+          <button id="checkPart" class="btn btn-outline-primary">
+            <i class="fas fa-search me-2"></i>Check Partition
+          </button>
+        </div>
+        <pre id="hashInfo" class="mt-3 bg-light p-3 rounded"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Cookie helper functions
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+      return null;
+    }
+
+    function deleteCookie(name) {
+      document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    }
+
+    // Logout function
+    function logout() {
+      deleteCookie('token');
+      deleteCookie('refresh_token');
+      deleteCookie('role');
+      try {
+        localStorage.clear();
+      } catch (e) {
+        console.log('localStorage not available');
+      }
+      window.location.href = '/login';
+    }
+
+    // Get token from cookie or localStorage (fallback)
+    function getToken() {
+      return getCookie('token') || localStorage.getItem('token');
+    }
+    
+    function getRefreshToken() {
+      return getCookie('refresh_token') || localStorage.getItem('refresh_token');
+    }
+    
+    function getRole() {
+      return getCookie('role') || localStorage.getItem('role');
+    }
+
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check auth on page load
+      function checkAuth() {
+        try {
+          const token = getToken();
+          const role = getRole();
+
+          console.log('Auth check - Token:', !!token, 'Role:', role);
+
+          if (!token || role !== 'worker') {
+            console.log('Auth failed, redirecting to login');
+            window.location.href = '/login';
+            return false;
+          }
+          return true;
+        } catch (error) {
+          console.error('Error checking auth:', error);
+          window.location.href = '/login';
+          return false;
+        }
+      }
+
+      // Check auth
+      if (!checkAuth()) {
+        return;
+      }
+
+      // Initialize page after successful auth
+      console.log('Auth successful, initializing page');
+      
+      // Load application history on page load
+      setTimeout(() => {
+        if (document.getElementById('loadApplicationHistory')) {
+          document.getElementById('loadApplicationHistory').click();
+        }
+      }, 500);
+
+      // Refresh application history every 30 seconds
+      setInterval(() => {
+        if (document.getElementById('loadApplicationHistory')) {
+          document.getElementById('loadApplicationHistory').click();
+        }
+      }, 30000);
+    });
+
+    const token = getToken();
+    const refreshToken = getRefreshToken();
+    const role = getRole();
+
+    // Cookie helper to set cookie
+    function setCookie(name, value, days = 7) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
+    }
+
+    // Function to handle token refresh
+    async function refreshAccessToken() {
+        try {
+            const r = await fetch('/auth/refresh', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${getRefreshToken()}`
+                }
+            });
+            
+            if (r.ok) {
+                const data = await r.json();
+                // Update both cookie and localStorage
+                setCookie('token', data.access_token, 1);
+                try {
+                    localStorage.setItem('token', data.access_token);
+                } catch (e) {
+                    console.log('localStorage not available');
+                }
+                return data.access_token;
+            } else {
+                // If refresh fails, redirect to login
+                window.location.href = '/login';
+                return null;
+            }
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            return null;
+        }
+    }
+
+    // Wrapper for fetch calls with token refresh
+    async function fetchWithAuth(url, options = {}) {
+        const headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${getToken()}`
+        };
+
+        let response = await fetch(url, { ...options, headers });
+
+        if (response.status === 401 || response.status === 403) {
+            // Try to refresh token
+            const newToken = await refreshAccessToken();
+            if (newToken) {
+                // Retry original request with new token
+                headers.Authorization = `Bearer ${newToken}`;
+                response = await fetch(url, { ...options, headers });
+            }
+        }
+
+        return response;
+    }
+
+    // Load profile on page load
+    loadProfile();
+    
+    async function loadProfile() {
+      try {
+        const r = await fetchWithAuth('/api/worker/profile');
+        const profile = await r.json();
+        
+        if(profile.hasProfile) {
+          document.getElementById('profileInfo').style.display = '';
+          document.getElementById('profileForm').style.display = 'none';
+          
+          // Update header
+          document.getElementById('profile-name').textContent = profile.full_name || 'Welcome';
+          document.getElementById('profile-location').textContent = profile.location || 'Location not set';
+          
+          // Fill profile info
+          document.getElementById('info_full_name').textContent = profile.full_name || 'N/A';
+          document.getElementById('info_location').textContent = profile.location || 'N/A';
+          document.getElementById('info_phone').textContent = profile.phone || 'N/A';
+          document.getElementById('info_age').textContent = profile.age || 'N/A';
+          document.getElementById('info_gender').textContent = profile.gender || 'N/A';
+          
+          // Display skills as tags
+          const skillsContainer = document.getElementById('info_skills_tags');
+          skillsContainer.innerHTML = '';
+          if (profile.skills) {
+            profile.skills.split(',').forEach(skill => {
+              const tag = document.createElement('span');
+              tag.className = 'skill-tag';
+              tag.textContent = skill.trim();
+              skillsContainer.appendChild(tag);
+            });
+          }
+          
+          document.getElementById('info_experience_years').textContent = profile.experience_years || '0';
+          
+          // Pre-fill form for editing
+          const form = document.getElementById('profileForm');
+          form.full_name.value = profile.full_name || '';
+          form.location.value = profile.location || '';
+          form.phone.value = profile.phone || '';
+          form.age.value = profile.age || '';
+          form.gender.value = profile.gender || '';
+          form.skills.value = profile.skills || '';
+          form.experience_years.value = profile.experience_years || '';
+        } else {
+          document.getElementById('profileInfo').style.display = 'none';
+          document.getElementById('profileForm').style.display = '';
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    }
+
+    function toggleEditMode() {
+      const form = document.getElementById('profileForm');
+      const info = document.getElementById('profileInfo');
+      if(form.style.display === 'none') {
+        form.style.display = '';
+        info.style.display = 'none';
+      } else {
+        form.style.display = 'none';
+        info.style.display = '';
+      }
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const f = e.target;
+      const body = Object.fromEntries(new FormData(f).entries());
+      try {
+        const r = await fetchWithAuth('/api/worker/profile', {
+          method:'PUT',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(body)
+        });
+        const data = await r.json();
+        alert(data.msg);
+        await loadProfile();
+      } catch (error) {
+        alert('Error updating profile');
+      }
+    });
+
+    let appliedJobs = new Set();
+    let totalMatches = 0;
+    let totalApplications = 0;
+    let approvedApplications = 0;
+    
+    document.getElementById('loadJobs').addEventListener('click', async ()=>{
+      await loadJobs();
+    });
+
+    async function loadJobs() {
+      try {
+        // First load applied jobs to know which ones user already applied to
+        const applied = await fetchWithAuth('/api/worker/applications');
+        const appliedData = await applied.json();
+        appliedJobs = new Set(appliedData.map(a => a.job_id));
+        
+        // Store application statuses in a map
+        const applicationStatuses = new Map(
+          appliedData.map(a => [a.job_id, a.application_status])
+        );
+        
+        totalApplications = appliedData.length;
+        approvedApplications = appliedData.filter(a => a.application_status === 'approved').length;
+        
+        // Update stats
+        document.getElementById('total-applications').textContent = totalApplications;
+        document.getElementById('approved-applications').textContent = approvedApplications;
+        
+        // Then load matched jobs
+        const r = await fetchWithAuth('/api/worker/matched_jobs');
+        const jobs = await r.json();
+        totalMatches = jobs.length;
+        document.getElementById('total-matches').textContent = totalMatches;
+        
+        const div = document.getElementById('jobs');
+        div.innerHTML = '';
+        
+        if (jobs.length === 0) {
+          div.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-search fa-3x mb-3" style="color: #6c757d"></i>
+              <h5>No matched jobs found</h5>
+              <p class="text-muted">Update your skills to find matching jobs</p>
+            </div>
+          `;
+          return;
+        }
+        
+        jobs.forEach(j => {
+          const isApplied = appliedJobs.has(j.job_id);
+          const applicationStatus = applicationStatuses.get(j.job_id);
+          
+          const card = document.createElement('div');
+          card.className = 'job-card';
+          card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="job-title">${j.title}</h5>
+                <p class="job-company mb-2">
+                  <i class="fas fa-building me-2"></i>${j.company_name}
+                </p>
+                ${applicationStatus ? `
+                  <div class="mb-3">
+                    <span class="badge ${getStatusBadgeClass(applicationStatus)}">
+                      <i class="fas ${getStatusIcon(applicationStatus)} me-2"></i>
+                      Application ${applicationStatus}
+                    </span>
+                  </div>
+                ` : ''}
+              </div>
+              <button class="btn ${isApplied ? 'btn-secondary' : 'btn-primary'} btn-sm" 
+                      ${isApplied ? 'disabled' : ''} 
+                      onclick="apply('${j.job_id}', this)">
+                <i class="fas ${isApplied ? 'fa-check' : 'fa-paper-plane'} me-2"></i>
+                ${isApplied ? 'Applied' : 'Apply Now'}
+              </button>
+            </div>
+            
+            <div class="job-details">
+              <div class="row">
+                <div class="col-md-6">
+                  <p><i class="fas fa-map-marker-alt me-2"></i>${j.location || 'Remote/Flexible'}</p>
+                  <p><i class="fas fa-phone me-2"></i>${j.company_phone || 'Contact not provided'}</p>
+                </div>
+                <div class="col-md-6">
+                  <p><i class="fas fa-money-bill-wave me-2"></i>₹${j.salary_min || '0'} - ₹${j.salary_max || '0'}</p>
+                  <p><i class="fas fa-calendar me-2"></i>Posted: ${new Date(j.posted_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            </div>
+            
+            <p class="mt-3 mb-2"><strong>Required Skills:</strong></p>
+            <div class="skills-tags">
+              ${j.required_skills.split(',').map(skill => 
+                `<span class="skill-tag">${skill.trim()}</span>`
+              ).join('')}
+            </div>
+            
+            <p class="mt-3 mb-0"><strong>Description:</strong></p>
+            <p class="text-muted">${j.description || 'No description provided'}</p>
+          `;
+          div.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error loading jobs:', error);
+        alert('Error loading jobs. Please try again.');
+      }
+    }
+
+    function getStatusBadgeClass(status) {
+      switch(status) {
+        case 'approved': return 'bg-success';
+        case 'rejected': return 'bg-danger';
+        default: return 'bg-secondary';
+      }
+    }
+
+    function getStatusIcon(status) {
+      switch(status) {
+        case 'approved': return 'fa-check-circle';
+        case 'rejected': return 'fa-times-circle';
+        default: return 'fa-clock';
+      }
+    }
+
+    async function apply(jobId, btn) {
+      try {
+        const r = await fetchWithAuth('/api/worker/apply', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({job_id: jobId})
+        });
+        const data = await r.json();
+        
+        if(r.ok) {
+          btn.className = 'btn btn-secondary btn-sm';
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-check me-2"></i>Applied';
+          appliedJobs.add(jobId);
+          totalApplications++;
+          document.getElementById('total-applications').textContent = totalApplications;
+          
+          // Refresh the applied jobs sections
+          loadPendingJobs();
+          loadApprovedJobs();
+        }
+        
+        alert(data.msg);
+      } catch (error) {
+        alert('Error applying to job. Please try again.');
+      }
+    }
+
+    document.getElementById('checkPart').addEventListener('click', async ()=>{
+      const id = document.getElementById('workerIdInput').value;
+      if(!id) return;
+      try {
+        const r = await fetchWithAuth('/api/debug/workers/hash_partition/'+id);
+        const data = await r.json();
+        document.getElementById('hashInfo').textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        alert('Error checking partition info');
+      }
+    });
+
+    // Load jobs on page load
+    document.getElementById('loadJobs').click();
+    
+    // Load applied jobs on page load
+    loadPendingJobs();
+    loadApprovedJobs();
+
+    // Functions to load applied jobs
+    async function loadPendingJobs() {
+      try {
+        const response = await fetchWithAuth('/api/worker/pending_jobs');
+        const pendingJobs = await response.json();
+        displayPendingJobs(pendingJobs);
+      } catch (error) {
+        console.error('Error loading pending jobs:', error);
+        document.getElementById('pending-jobs').innerHTML = `
+          <div class="text-center py-4">
+            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+            <h5 class="text-danger">Error loading pending applications</h5>
+            <p class="text-muted">Please try refreshing the page.</p>
+          </div>
+        `;
+      }
+    }
+
+    async function loadApprovedJobs() {
+      try {
+        const response = await fetchWithAuth('/api/worker/approved_jobs');
+        const approvedJobs = await response.json();
+        displayApprovedJobs(approvedJobs);
+      } catch (error) {
+        console.error('Error loading approved jobs:', error);
+        document.getElementById('approved-jobs').innerHTML = `
+          <div class="text-center py-4">
+            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+            <h5 class="text-danger">Error loading approved applications</h5>
+            <p class="text-muted">Please try refreshing the page.</p>
+          </div>
+        `;
+      }
+    }
+
+    function displayPendingJobs(jobs) {
+      const container = document.getElementById('pending-jobs');
+      const countBadge = document.getElementById('pending-count');
+      
+      countBadge.textContent = `${jobs.length} Pending`;
+      
+      if (jobs.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4">
+            <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No pending applications</h5>
+            <p class="text-muted">Apply to jobs below to see your pending applications here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '<div class="row">';
+      jobs.forEach(job => {
+        const appliedDate = new Date(job.applied_at).toLocaleDateString('en-US', { 
+          year: 'numeric', month: 'short', day: 'numeric' 
+        });
+        html += `
+          <div class="col-md-6 mb-3">
+            <div class="card border-warning">
+              <div class="card-body">
+                <h6 class="card-title">${job.title}</h6>
+                <p class="card-text text-muted mb-2">${job.company_name}</p>
+                <p class="card-text"><i class="fas fa-map-marker-alt me-1"></i>${job.location || 'Location not specified'}</p>
+                <p class="card-text"><i class="fas fa-dollar-sign me-1"></i>${job.salary_range || 'Salary not specified'}</p>
+                <p class="card-text small">Applied: ${appliedDate}</p>
+                <span class="badge bg-warning">${job.application_status.charAt(0).toUpperCase() + job.application_status.slice(1)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function displayApprovedJobs(jobs) {
+      const container = document.getElementById('approved-jobs');
+      const countBadge = document.getElementById('approved-count');
+      
+      countBadge.textContent = `${jobs.length} Approved`;
+      
+      if (jobs.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4">
+            <i class="fas fa-check-circle fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No approved applications yet</h5>
+            <p class="text-muted">Once employers approve your applications, they will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '<div class="row">';
+      jobs.forEach(job => {
+        const appliedDate = new Date(job.applied_at).toLocaleDateString('en-US', { 
+          year: 'numeric', month: 'short', day: 'numeric' 
+        });
+        html += `
+          <div class="col-md-6 mb-3">
+            <div class="card border-success">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="card-title mb-0">${job.title}</h6>
+                  <span class="badge bg-success">${job.application_status.charAt(0).toUpperCase() + job.application_status.slice(1)}</span>
+                </div>
+                <p class="card-text text-muted mb-3"><i class="fas fa-building me-2"></i>${job.company_name || 'Individual Employer'}</p>
+                
+                <div class="mb-3">
+                  <strong class="text-success"><i class="fas fa-info-circle me-2"></i>Employer Contact Information:</strong>
+                  <div class="mt-2 ps-3">
+                    <p class="card-text mb-1"><i class="fas fa-user me-2 text-success"></i><strong>Name:</strong> ${job.employer_name || 'Not provided'}</p>
+                    <p class="card-text mb-1"><i class="fas fa-envelope me-2 text-success"></i><strong>Email:</strong> ${job.employer_email || 'Not provided'}</p>
+                    <p class="card-text mb-1"><i class="fas fa-phone me-2 text-success"></i><strong>Phone:</strong> ${job.company_phone || 'Not provided'}</p>
+                    <p class="card-text mb-1"><i class="fas fa-map-marker-alt me-2 text-success"></i><strong>Company Location:</strong> ${job.company_location || 'Not provided'}</p>
+                  </div>
+                </div>
+                
+                <hr>
+                
+                <p class="card-text mb-1"><i class="fas fa-map-marker-alt me-2"></i><strong>Job Location:</strong> ${job.location || 'Location not specified'}</p>
+                <p class="card-text mb-1"><i class="fas fa-dollar-sign me-2"></i>${job.salary_range || 'Salary not specified'}</p>
+                ${job.description ? `<p class="card-text mt-2 mb-1"><strong>Description:</strong> ${job.description}</p>` : ''}
+                <p class="card-text small text-muted mt-2"><i class="fas fa-calendar me-2"></i>Applied: ${appliedDate}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Application History
+    document.getElementById('loadApplicationHistory').addEventListener('click', loadApplicationHistory);
+
+    async function loadApplicationHistory() {
+      try {
+        const r = await fetchWithAuth('/api/worker/applications');
+        const applications = await r.json();
+        
+        const historyDiv = document.getElementById('applicationHistory');
+        historyDiv.innerHTML = '';
+        
+        if (applications.length === 0) {
+          historyDiv.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-history fa-3x mb-3" style="color: #6c757d"></i>
+              <h5>No Applications Yet</h5>
+              <p class="text-muted">Start applying to jobs that match your skills</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Sort by date, newest first
+        applications.sort((a, b) => new Date(b.applied_at) - new Date(a.applied_at));
+        
+        applications.forEach(app => {
+          const card = document.createElement('div');
+          card.className = 'job-card';
+          card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="badge ${getStatusBadgeClass(app.application_status)} mb-2">
+                  <i class="fas ${getStatusIcon(app.application_status)} me-2"></i>
+                  ${app.application_status.toUpperCase()}
+                </span>
+                <h5 class="job-title">Application #${app.job_id}</h5>
+                <p class="text-muted mb-2">
+                  <i class="fas fa-calendar me-2"></i>Applied on ${new Date(app.applied_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <div class="job-details p-3">
+              <p class="mb-2">
+                <strong>Status Timeline:</strong>
+              </p>
+              <div class="d-flex align-items-center">
+                <div class="position-relative" style="flex: 1;">
+                  <div class="progress" style="height: 4px;">
+                    <div class="progress-bar ${getProgressBarClass(app.application_status)}" 
+                         style="width: ${getProgressWidth(app.application_status)}%">
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-2">
+                    <small class="text-muted">Applied</small>
+                    <small class="text-muted">Under Review</small>
+                    <small class="text-muted">Decision</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          historyDiv.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error loading application history:', error);
+        alert('Error loading application history. Please try again.');
+      }
+    }
+
+    function getProgressBarClass(status) {
+      switch(status) {
+        case 'approved': return 'bg-success';
+        case 'rejected': return 'bg-danger';
+        default: return 'bg-info';
+      }
+    }
+
+    function getProgressWidth(status) {
+      switch(status) {
+        case 'pending': return 33;
+        case 'approved':
+        case 'rejected': return 100;
+        default: return 0;
+      }
+    }
+  </script>
+</body>
+</html>

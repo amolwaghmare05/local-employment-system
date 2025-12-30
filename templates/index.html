@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JobMatrix - Smart Employment Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    .split-container {
+      display: flex;
+      min-height: 100vh;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .left-pane {
+      background: linear-gradient(45deg, #2193b0, #6dd5ed);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      text-align: center;
+      color: white;
+    }
+    .left-pane img {
+      max-width: 60%;
+      height: auto;
+      margin-bottom: 2rem;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+      transition: transform 0.3s ease;
+    }
+    .left-pane img:hover {
+      transform: translateY(-5px);
+    }
+    .left-pane h3 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    .left-pane p {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      max-width: 80%;
+      line-height: 1.6;
+    }
+    .right-pane {
+      flex: 1;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+    }
+    .content-box {
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      padding: 2rem;
+      border-radius: 16px;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .content-box h1 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #2193b0;
+      font-weight: 700;
+    }
+    .btn {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 12px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #2193b0, #6dd5ed);
+      border: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(33,147,176,0.3);
+    }
+    .btn-secondary {
+      background: white;
+      color: #2193b0;
+      border: 2px solid #2193b0;
+    }
+    .btn-secondary:hover {
+      background: rgba(33,147,176,0.1);
+      color: #2193b0;
+      border: 2px solid #2193b0;
+    }
+    .btn-dark {
+      background: #343a40;
+    }
+    .btn-dark:hover {
+      background: #23272b;
+      transform: translateY(-2px);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .split-container {
+        flex-direction: column;
+      }
+      .left-pane, .right-pane {
+        padding: 2rem;
+      }
+      .left-pane img {
+        max-width: 80%;
+      }
+      .content-box {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="split-container">
+    <!-- Left branding panel -->
+    <div class="left-pane">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Jobs illustration" class="mb-4">
+      <h3>Find Your Perfect Match</h3>
+      <p>Connecting skilled professionals with the right opportunities in your local community. Start your journey today!</p>
+      <div class="features mt-4">
+        <div class="row g-4">
+          <div class="col-12">
+            <i class="fas fa-search fa-2x mb-2"></i>
+            <h5>Smart Job Matching</h5>
+          </div>
+          <div class="col-12">
+            <i class="fas fa-handshake fa-2x mb-2"></i>
+            <h5>Direct Connections</h5>
+          </div>
+          <div class="col-12">
+            <i class="fas fa-map-marker-alt fa-2x mb-2"></i>
+            <h5>Local Opportunities</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right buttons panel -->
+    <div class="right-pane">
+      <div class="content-box">
+        <h1>JobMatrix</h1>
+        <a class="btn btn-primary" href="/login">
+          <i class="fas fa-sign-in-alt me-2"></i> Login
+        </a>
+        <a class="btn btn-secondary" href="/register">
+          <i class="fas fa-user-plus me-2"></i> Register
+        </a>
+        <a class="btn btn-dark" href="/admin/dashboard">
+          <i class="fas fa-user-shield me-2"></i> Admin Dashboard
+        </a>
+        
+        <div class="mt-4 text-muted">
+          <small>Need help? Contact support@localemployment.com</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

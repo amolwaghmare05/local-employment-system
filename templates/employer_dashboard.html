@@ -1,0 +1,702 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Employer Dashboard - JobMatrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%) !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .navbar-brand {
+      color: white !important;
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+    .navbar-brand:hover {
+      color: white !important;
+    }
+    .navbar .btn-outline-primary {
+      color: white;
+      border-color: white;
+    }
+    .navbar .btn-outline-primary:hover {
+      background: white;
+      color: #2193b0;
+    }
+    .main-container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .card-header {
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-body {
+      padding: 1.5rem;
+    }
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #2193b0;
+      box-shadow: 0 0 0 0.25rem rgba(33,147,176,0.25);
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #2193b0, #6dd5ed);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(33,147,176,0.3);
+    }
+    .profile-section {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-right: 1.5rem;
+      background: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #2193b0;
+    }
+    .profile-info h3 {
+      margin: 0;
+      color: #2193b0;
+    }
+    .profile-info p {
+      margin: 0;
+      color: #6c757d;
+    }
+    .applicant-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    .applicant-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-card h4 {
+      color: #2193b0;
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    .stat-card p {
+      color: #6c757d;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    .badge {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .skills-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .skill-tag {
+      background: rgba(33,147,176,0.1);
+      color: #2193b0;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">
+          <i class="fas fa-building me-2"></i>JobMatrix
+        </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/" onclick="localStorage.clear()">
+              <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="profile-info">
+          <h3 id="profile-name">Welcome</h3>
+          <p id="profile-location">Complete your company profile</p>
+        </div>
+        <button class="btn btn-primary ms-auto" onclick="toggleEditProfile()">
+          <i class="fas fa-edit me-2"></i>Edit Profile
+        </button>
+      </div>
+
+      <!-- Profile View -->
+      <div id="profileInfo" style="display:none">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="mb-3">Personal Information</h5>
+                <p><i class="fas fa-user me-2"></i><strong>Name:</strong> <span id="info_employer_name"></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="mb-3">Company Information</h5>
+                <p><i class="fas fa-building me-2"></i><strong>Company Name:</strong> <span id="info_company_name"></span></p>
+                <p><i class="fas fa-map-marker-alt me-2"></i><strong>Location:</strong> <span id="info_location"></span></p>
+                <p><i class="fas fa-phone me-2"></i><strong>Phone:</strong> <span id="info_phone"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Edit Form -->
+      <form id="profileForm" class="row g-3" style="display:none">
+        <div class="col-md-12">
+          <label class="form-label">Your Name <span class="text-danger">*</span></label>
+          <input class="form-control" name="employer_name" placeholder="Your full name" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Company Name (Optional)</label>
+          <input class="form-control" name="company_name" placeholder="Company name (if applicable)">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Location</label>
+          <input class="form-control" name="location" placeholder="Company location">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone</label>
+          <input class="form-control" name="phone" placeholder="Contact number">
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary">
+            <i class="fas fa-save me-2"></i>Save Profile
+          </button>
+        </div>
+      </form>
+      <pre id="saveMsg" class="mt-2 small"></pre>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <i class="fas fa-bullhorn fa-2x mb-2" style="color: #2193b0"></i>
+        <h4 id="posted-jobs">0</h4>
+        <p>Posted Jobs</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-users fa-2x mb-2" style="color: #2193b0"></i>
+        <h4 id="total-applicants">0</h4>
+        <p>Total Applicants</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-check-circle fa-2x mb-2" style="color: #2193b0"></i>
+        <h4 id="hired-workers">0</h4>
+        <p>Hired Workers</p>
+      </div>
+    </div>
+
+    <!-- Post Job Section -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Post a New Job</h5>
+      </div>
+      <div class="card-body">
+        <form id="jobForm" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Job Title</label>
+            <input class="form-control" name="title" placeholder="e.g. Senior Electrician" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Location</label>
+            <input class="form-control" name="location" placeholder="Job location">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="3" placeholder="Job description and requirements"></textarea>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Required Skills</label>
+            <input class="form-control" name="required_skills" placeholder="e.g. electrician, wiring">
+            <div class="form-text">Separate skills with commas for better matching</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Minimum Salary (₹)</label>
+            <input class="form-control" type="number" name="salary_min" placeholder="Minimum salary">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Maximum Salary (₹)</label>
+            <input class="form-control" type="number" name="salary_max" placeholder="Maximum salary">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary">
+              <i class="fas fa-paper-plane me-2"></i>Post Job
+            </button>
+          </div>
+        </form>
+        <pre id="postMsg" class="mt-2 small"></pre>
+      </div>
+    </div>
+
+    <!-- Applicants Section -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-users me-2"></i>Job Applicants</h5>
+        <button id="loadApplicants" class="btn btn-primary btn-sm">
+          <i class="fas fa-sync-alt me-2"></i>Refresh List
+        </button>
+      </div>
+      <div class="card-body">
+        <div id="apps"></div>
+      </div>
+    </div>
+
+    <!-- Partition Info -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-database me-2"></i>Job Partitions</h5>
+      </div>
+      <div class="card-body">
+        <button id="loadParts" class="btn btn-outline-primary">
+          <i class="fas fa-layer-group me-2"></i>Show Partitions
+        </button>
+        <pre id="parts" class="mt-3 bg-light p-3 rounded"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Cookie helper functions
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+      return null;
+    }
+
+    function setCookie(name, value, days = 7) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
+    }
+
+    function deleteCookie(name) {
+      document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    }
+
+    // Logout function
+    function logout() {
+      deleteCookie('token');
+      deleteCookie('refresh_token');
+      deleteCookie('role');
+      try {
+        localStorage.clear();
+      } catch (e) {
+        console.log('localStorage not available');
+      }
+      window.location.href = '/login';
+    }
+
+    function getToken() {
+      return getCookie('token') || localStorage.getItem('token');
+    }
+
+    function getRefreshToken() {
+      return getCookie('refresh_token') || localStorage.getItem('refresh_token');
+    }
+
+    function getRole() {
+      return getCookie('role') || localStorage.getItem('role');
+    }
+
+    // Function to handle token refresh
+    async function refreshAccessToken() {
+        try {
+            const r = await fetch('/auth/refresh', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${getRefreshToken()}`
+                }
+            });
+            
+            if (r.ok) {
+                const data = await r.json();
+                setCookie('token', data.access_token, 1);
+                try {
+                    localStorage.setItem('token', data.access_token);
+                } catch (e) {
+                    console.log('localStorage not available');
+                }
+                return data.access_token;
+            } else {
+                window.location.href = '/login';
+                return null;
+            }
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            return null;
+        }
+    }
+
+    // Wrapper for fetch calls with token refresh
+    async function fetchWithAuth(url, options = {}) {
+        const headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${getToken()}`
+        };
+
+        let response = await fetch(url, { ...options, headers });
+
+        if (response.status === 401 || response.status === 403) {
+            const newToken = await refreshAccessToken();
+            if (newToken) {
+                headers.Authorization = `Bearer ${newToken}`;
+                response = await fetch(url, { ...options, headers });
+            }
+        }
+
+        return response;
+    }
+
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      function checkAuth() {
+        try {
+          const token = getToken();
+          const role = getRole();
+
+          console.log('Auth check - Token:', !!token, 'Role:', role);
+
+          if (!token || role !== 'employer') {
+            console.log('Auth failed, redirecting to login');
+            window.location.href = '/login';
+            return false;
+          }
+          return true;
+        } catch (error) {
+          console.error('Error checking auth:', error);
+          window.location.href = '/login';
+          return false;
+        }
+      }
+
+      if (!checkAuth()) {
+        return;
+      }
+
+      // Initialize page after successful auth
+      console.log('Auth successful, initializing page');
+      
+      // Load profile on page load
+      setTimeout(() => {
+        loadProfile();
+      }, 100);
+    });
+
+    const token = getToken();
+    
+    async function loadProfile() {
+      const r = await fetchWithAuth('/api/employer/profile');
+      const profile = await r.json();
+      
+      if(profile.hasProfile) {
+        document.getElementById('profileInfo').style.display = '';
+        document.getElementById('profileForm').style.display = 'none';
+        
+        // Update header
+        const displayName = profile.employer_name || profile.company_name || 'Welcome';
+        document.getElementById('profile-name').textContent = displayName;
+        document.getElementById('profile-location').textContent = profile.location || 'Location not set';
+        
+        // Fill profile info
+        document.getElementById('info_employer_name').textContent = profile.employer_name || 'N/A';
+        document.getElementById('info_company_name').textContent = profile.company_name || 'N/A';
+        document.getElementById('info_location').textContent = profile.location || 'N/A';
+        document.getElementById('info_phone').textContent = profile.phone || 'N/A';
+        
+        // Pre-fill form for editing
+        const form = document.getElementById('profileForm');
+        form.employer_name.value = profile.employer_name || '';
+        form.company_name.value = profile.company_name || '';
+        form.location.value = profile.location || '';
+        form.phone.value = profile.phone || '';
+      } else {
+        document.getElementById('profileInfo').style.display = 'none';
+        document.getElementById('profileForm').style.display = '';
+      }
+    }
+
+    function toggleEditProfile() {
+      const form = document.getElementById('profileForm');
+      const info = document.getElementById('profileInfo');
+      if(form.style.display === 'none') {
+        form.style.display = '';
+        info.style.display = 'none';
+      } else {
+        form.style.display = 'none';
+        info.style.display = '';
+      }
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const f = e.target;
+      const body = Object.fromEntries(new FormData(f).entries());
+      const r = await fetchWithAuth('/api/employer/profile', {
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(body)
+      });
+      document.getElementById('saveMsg').textContent = (await r.json()).msg;
+      await loadProfile();
+    });
+
+    document.getElementById('jobForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const body = Object.fromEntries(new FormData(e.target).entries());
+      // convert empty to null
+      for (const k in body) if(body[k]==="") body[k]=null;
+      try {
+        const r = await fetchWithAuth('/api/employer/jobs', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(body)
+        });
+        const data = await r.json();
+        document.getElementById('postMsg').textContent = data.msg;
+        if(r.ok) {
+          e.target.reset();
+          // Refresh stats and applicants list
+          loadJobStats();
+          document.getElementById('loadApplicants').click();
+        }
+      } catch (error) {
+        document.getElementById('postMsg').textContent = 'Error posting job';
+      }
+    });
+
+    let jobStats = {
+      totalJobs: 0,
+      totalApplicants: 0,
+      hiredWorkers: 0
+    };
+
+    // Function to load job statistics
+    async function loadJobStats() {
+      try {
+        // Get total posted jobs
+        const jobsResponse = await fetchWithAuth('/api/employer/jobs'
+        });
+        const jobs = await jobsResponse.json();
+        jobStats.totalJobs = jobs.length;
+        
+        // Get applicants for other stats
+        const applicantsResponse = await fetchWithAuth('/api/employer/applicants'
+        });
+        const applicants = await applicantsResponse.json();
+        jobStats.totalApplicants = applicants.length;
+        jobStats.hiredWorkers = applicants.filter(a => a.application_status === 'approved').length;
+        
+        // Update UI
+        document.getElementById('posted-jobs').textContent = jobStats.totalJobs;
+        document.getElementById('total-applicants').textContent = jobStats.totalApplicants;
+        document.getElementById('hired-workers').textContent = jobStats.hiredWorkers;
+      } catch (error) {
+        console.error('Error loading job stats:', error);
+      }
+    }
+
+    document.getElementById('loadApplicants').addEventListener('click', async ()=>{
+      try {
+        const r = await fetchWithAuth('/api/employer/applicants'
+        });
+        const rows = await r.json();
+        
+        const ul = document.getElementById('apps');
+        ul.innerHTML = '';
+        
+        if (rows.length === 0) {
+          ul.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-users fa-3x mb-3" style="color: #6c757d"></i>
+              <h5>No applications yet</h5>
+              <p class="text-muted">Post jobs to start receiving applications</p>
+            </div>
+          `;
+          return;
+        }
+        
+        rows.forEach(a => {
+          const card = document.createElement('div');
+          card.className = 'applicant-card';
+          card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="mb-1 text-primary">${a.title}</h5>
+                <div class="mb-3">
+                  <span class="badge ${getStatusBadgeClass(a.application_status)}">
+                    <i class="fas ${getStatusIcon(a.application_status)} me-2"></i>${a.application_status}
+                  </span>
+                </div>
+                <div class="applicant-info">
+                  <p class="mb-2"><i class="fas fa-user me-2"></i><strong>Applicant:</strong> ${a.full_name}</p>
+                  <p class="mb-2"><i class="fas fa-map-marker-alt me-2"></i><strong>Location:</strong> ${a.location || 'Not specified'}</p>
+                  <p class="mb-2"><i class="fas fa-phone me-2"></i><strong>Contact:</strong> ${a.phone || 'Not provided'}</p>
+                  <p class="mb-2"><i class="fas fa-tools me-2"></i><strong>Skills:</strong></p>
+                  <div class="skills-tags">
+                    ${a.skills ? a.skills.split(',').map(skill => 
+                      `<span class="skill-tag">${skill.trim()}</span>`
+                    ).join('') : '<span class="text-muted">No skills listed</span>'}
+                  </div>
+                </div>
+                <small class="text-muted mt-3 d-block">
+                  <i class="fas fa-clock me-2"></i>Applied: ${new Date(a.applied_at).toLocaleString()}
+                </small>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-outline-success btn-sm" onclick="updateStatus('${a.application_id}','approved')"
+                        ${a.application_status !== 'pending' ? 'disabled' : ''}>
+                  <i class="fas fa-check me-2"></i>Approve
+                </button>
+                <button class="btn btn-outline-danger btn-sm" onclick="updateStatus('${a.application_id}','rejected')"
+                        ${a.application_status !== 'pending' ? 'disabled' : ''}>
+                  <i class="fas fa-times me-2"></i>Reject
+                </button>
+              </div>
+            </div>
+          `;
+          ul.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error loading applicants:', error);
+        document.getElementById('apps').innerHTML = `
+          <div class="alert alert-danger">
+            Error loading applicants. Please try again.
+          </div>
+        `;
+      }
+    });
+
+    function getStatusBadgeClass(status) {
+      switch(status) {
+        case 'approved': return 'bg-success';
+        case 'rejected': return 'bg-danger';
+        default: return 'bg-secondary';
+      }
+    }
+
+    function getStatusIcon(status) {
+      switch(status) {
+        case 'approved': return 'fa-check-circle';
+        case 'rejected': return 'fa-times-circle';
+        default: return 'fa-clock';
+      }
+    }
+
+    async function updateStatus(appId, status) {
+      try {
+        const r = await fetchWithAuth('/api/employer/applications/'+appId+'/status', {
+          method:'PUT',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({status})
+        });
+        const data = await r.json();
+        alert(data.msg);
+        document.getElementById('loadApplicants').click(); // reload list
+      } catch (error) {
+        alert('Error updating application status');
+      }
+    }
+
+    document.getElementById('loadParts').addEventListener('click', async ()=>{
+      try {
+        const r = await fetchWithAuth('/api/debug/jobs/partitions'
+        });
+        const data = await r.json();
+        document.getElementById('parts').textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        alert('Error loading partition information');
+      }
+    });
+
+    // Load stats and applicants on page load
+    loadJobStats();
+    document.getElementById('loadApplicants').click();
+  </script>
+</body>
+</html>

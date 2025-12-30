@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Login - JobMatrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .login-container {
+      max-width: 450px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .brand-section {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .brand-section img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      color: #2193b0;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .form-control {
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: #2193b0;
+      box-shadow: 0 0 0 0.25rem rgba(33,147,176,0.25);
+    }
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #2193b0, #6dd5ed);
+      border: none;
+      padding: 0.75rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(33,147,176,0.3);
+    }
+    .password-toggle {
+      cursor: pointer;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-left: none;
+      color: #6c757d;
+    }
+    .password-toggle:hover {
+      color: #2193b0;
+    }
+    .alert {
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .back-home {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      color: #6c757d;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .back-home:hover {
+      color: #2193b0;
+    }
+    #msg {
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="login-container">
+      <div class="brand-section">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo">
+        <h2>Welcome Back to JobMatrix</h2>
+        <p class="text-muted">Sign in to your account</p>
+      </div>
+      
+      <form id="loginForm" class="needs-validation" novalidate>
+        <div class="mb-4">
+          <label class="form-label">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+            <input type="email" class="form-control" name="email" required 
+                   placeholder="Enter your email">
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+            <input class="form-control" type="password" name="password" required
+                   placeholder="Enter your password">
+            <button class="btn password-toggle" type="button" onclick="togglePassword(this)">
+              <i class="fas fa-eye"></i>
+            </button>
+            <div class="invalid-feedback">Please enter your password.</div>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary w-100" type="submit">
+          <i class="fas fa-sign-in-alt me-2"></i> Login
+        </button>
+      </form>
+      
+      <pre id="msg" class="mt-3"></pre>
+      
+      <div class="text-center mt-4">
+        <p class="mb-0">Don't have an account? 
+          <a href="/register" class="text-primary text-decoration-none">Register</a>
+        </p>
+      </div>
+      
+      <a href="/" class="back-home">
+        <i class="fas fa-arrow-left me-2"></i>Back to Home
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Cookie helper functions
+    function setCookie(name, value, days = 7) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax';
+    }
+
+    function togglePassword(button) {
+      const input = button.parentElement.querySelector('input[type="password"]');
+      const icon = button.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
+
+    // Form validation
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const form = e.target;
+      if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+      }
+      
+      const msgElement = document.getElementById('msg');
+      try {
+        const body = {
+          email: form.email.value.trim(),
+          password: form.password.value
+        };
+        
+        const r = await fetch('/auth/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(body)
+        });
+        
+        const data = await r.json();
+        msgElement.style.display = 'block';
+        
+        if (r.ok) {
+          msgElement.style.backgroundColor = '#d4edda';
+          msgElement.style.color = '#155724';
+          
+          // Store in cookies instead of localStorage
+          setCookie('token', data.access_token, 1);
+          setCookie('refresh_token', data.refresh_token, 30);
+          setCookie('role', data.role, 30);
+          
+          // Also set in localStorage as fallback
+          try {
+            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('refresh_token', data.refresh_token);
+            localStorage.setItem('role', data.role);
+          } catch (e) {
+            console.log('localStorage not available, using cookies only');
+          }
+          
+          msgElement.textContent = 'Login successful! Redirecting...';
+          
+          setTimeout(() => {
+            switch(data.role) {
+              case 'worker':
+                window.location.replace('/worker/dashboard');
+                break;
+              case 'employer':
+                window.location.replace('/employer/dashboard');
+                break;
+              case 'admin':
+                window.location.replace('/admin/dashboard');
+                break;
+              default:
+                window.location.replace('/');
+            }
+          }, 100);
+        } else {
+          msgElement.style.backgroundColor = '#f8d7da';
+          msgElement.style.color = '#721c24';
+          msgElement.textContent = JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        msgElement.style.display = 'block';
+        msgElement.style.backgroundColor = '#f8d7da';
+        msgElement.style.color = '#721c24';
+        msgElement.textContent = 'An error occurred. Please try again.';
+        console.error('Login error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
