@@ -2,6 +2,12 @@
 
 A web-based platform that connects talented professionals with employment opportunities. Built with Flask and MongoDB Atlas, featuring role-based access, intelligent job matching, and efficient data partitioning.
 
+## 🌐 Live Demo
+
+**Website**: [https://local-employment-system.onrender.com](https://local-employment-system.onrender.com/)
+
+*Note: Free tier may take 30-60 seconds to wake up on first request*
+
 ## Features
 
 - **Role-Based Access**

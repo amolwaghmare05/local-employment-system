@@ -38,13 +38,13 @@
 5. **Get Connection String**
    - Go to "Database" (Deployment)
    - Click "Connect" on your cluster
-   - Choose "Connect your application"
-   - Driver: Python, Version: 3.12 or later
-   - Copy the connection string (looks like):
+   - Choose **"Drivers"** (first option - "Access your Atlas data using MongoDB's native drivers")
+   - Select Driver: **Python**, Version: **3.12 or later**
+   - Copy the connection string from step 3 (looks like):
      ```
      mongodb+srv://employment_admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
      ```
-   - **Replace `<password>` with your actual password!**
+   - **Important: Replace `<password>` with the actual password you saved in step 3!**
 
 ### Step 2: Deploy to Render (10 minutes)
 
