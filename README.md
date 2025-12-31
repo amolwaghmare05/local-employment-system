@@ -4,9 +4,9 @@ A web-based platform that connects talented professionals with employment opport
 
 ## 🌐 Live Demo
 
-**Website**: [https://local-employment-system.onrender.com](https://local-employment-system.onrender.com/)
+**Website**: [https://local-employment-system-production.up.railway.app](https://local-employment-system-production.up.railway.app/)
 
-*Note: Free tier may take 30-60 seconds to wake up on first request*
+*Hosted on Railway - Fast load times with automatic deployments from GitHub*
 
 ## Features
 
