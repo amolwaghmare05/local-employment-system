@@ -4,7 +4,7 @@ A Flask-based web application that connects job seekers with employers in their 
 
 ## 🌐 Live Demo
 
-**Try it here**: [https://local-employment-system-production.up.railway.app](https://local-employment-system-production.up.railway.app/)
+**Try it here**: [https://local-employment-system.up.railway.app](https://local-employment-system.up.railway.app/)
 
 ## Features
 
