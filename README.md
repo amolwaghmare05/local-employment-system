@@ -1,112 +1,101 @@
-# JobMatrix - Smart Employment Platform
+# Local Employment System
 
-A web-based platform that connects talented professionals with employment opportunities. Built with Flask and MongoDB Atlas, featuring role-based access, intelligent job matching, and efficient data partitioning.
+A Flask-based web application that connects job seekers with employers in their local area. Features intelligent job matching, role-based dashboards, and real-time application tracking.
 
 ## 🌐 Live Demo
 
-**Website**: [https://local-employment-system-production.up.railway.app](https://local-employment-system-production.up.railway.app/)
-
-*Hosted on Railway - Fast load times with automatic deployments from GitHub*
+**Try it here**: [https://local-employment-system-production.up.railway.app](https://local-employment-system-production.up.railway.app/)
 
 ## Features
 
-- **Role-Based Access**
-  - Workers: Create profiles, search jobs, and submit applications
-  - Employers: Post jobs and manage applications
-  - Admins: System oversight and user management
+- **For Job Seekers**: Create profile, search jobs by skills/location, apply and track applications
+- **For Employers**: Post jobs, review applications, manage candidates
+- **For Admins**: User management, job oversight, system monitoring
+- **Smart Matching**: Skill-based job recommendations
+- **Secure Auth**: JWT tokens with bcrypt password hashing
 
-- **Smart Job Matching**
-  - Skills-based job matching algorithm
-  - Location-aware job search
-  - Real-time application tracking
+## Tech Stack
 
-- **Data Optimization**
-  - Workers: Hash partitioning (8 partitions) for efficient lookups
-  - Jobs: Range partitioning by year
-  - Indexed search on skills and job requirements
+- **Backend**: Flask (Python)
+- **Database**: MongoDB Atlas
+- **Frontend**: HTML5, Bootstrap 5, Vanilla JS
+- **Auth**: JWT (Flask-JWT-Extended)
 
-## Technical Stack
+## Quick Start
 
-- **Backend**: Python/Flask
-- **Database**: MongoDB Atlas (Cloud)
-- **Frontend**: HTML5, Bootstrap 5, JavaScript
-- **Authentication**: JWT (JSON Web Tokens)
+1. Clone the repository
+   ```bash
+   git clone https://github.com/amolwaghmare05/local-employment-system.git
+   cd local-employment-system
+   ```
 
-## Database Collections
-
-- **users** - Central authentication and user management
-- **workers** - Worker profiles with skills and location
-- **employers** - Employer profiles and company information
-- **jobs** - Job postings with skill requirements and location
-- **applications** - Job applications with status tracking
-- **admins** - Admin profiles and permissions
-
-## Setup
-
-1. **MongoDB Atlas Setup** (Manual):
-   - Create a MongoDB Atlas cluster
-   - Create database: `local_employment_db`
-   - Get connection string and configure IP whitelist
-   - Collections will be created automatically
-
-2. **Install Python dependencies**:
+2. Install dependencies
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Configure environment variables** in `.env`:
-   ```
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+3. Set up MongoDB Atlas
+   - Create a free cluster at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+   - Get your connection string
+   - Whitelist your IP address
+
+4. Configure environment variables (create `.env` file)
+   ```bash
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
    DATABASE_NAME=local_employment_db
-   SECRET_KEY=your_secret_key
-   JWT_SECRET_KEY=your_jwt_secret
+   SECRET_KEY=your-secret-key
+   JWT_SECRET_KEY=your-jwt-secret
    ```
 
-4. **Run the application**:
+5. Run the application
    ```bash
    python app.py
    ```
 
-5. **Create sample data** (Optional):
-   ```bash
-   python setup_sample_data.py
-   ```
+6. Access at `http://localhost:5000`
 
-## Default Sample Accounts
+## Project Structure
 
-After running `setup_sample_data.py`:
-- **Admin**: admin@example.com (password: admin123)
-- **Employer**: employer1@company.com (password: employer123)  
-- **Worker**: worker1@email.com (password: worker123)
+```
+├── app.py              # Main Flask application
+├── config.py           # Configuration settings
+├── models/             # Database models
+│   ├── mongodb.py
+│   ├── user_model_mongo.py
+│   ├── job_model_mongo.py
+│   └── application_model_mongo.py
+├── routes/             # Route blueprints
+│   ├── worker_routes.py
+│   ├── employer_routes.py
+│   └── admin_routes.py
+└── templates/          # HTML templates
+```
 
-## Features by Role
+## Deployment
 
-### Workers
-- Complete profile with skills and experience
-- Browse matched job listings
-- Apply to positions
-- Track application status
-- View application history
+The app is deployed on Railway. For deploying your own instance:
 
-### Employers
-- Create company profile
-- Post job opportunities
-- Review applications
-- Manage applicant status
-- View hiring statistics
+1. Fork this repository
+2. Sign up at [railway.app](https://railway.app)
+3. Create new project from GitHub repo
+4. Add environment variables (same as .env)
+5. Deploy automatically!
 
-### Administrators
-- User management
-- Job oversight
-- Application monitoring
-- Activity logging
-- System statistics
+## Screenshots
 
-## Security Features
+*Coming soon*
 
-- Password hashing with bcrypt
-- JWT-based authentication
-- Role-based access control
+## License
+
+MIT License - feel free to use for your projects
+
+## Author
+
+Developed by Amol Waghmare
+
+---
+
+**Note**: This project was created as a learning exercise to understand Flask, MongoDB, and full-stack development.
 - Activity logging for admin actions
 
 ## Data Partitioning
